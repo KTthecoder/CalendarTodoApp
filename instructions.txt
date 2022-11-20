@@ -1,0 +1,8 @@
+Calendar App
+
+1. Display whole month like in Calendar
+2. Under date list with things to do in this day
+3. Icons for important, less important activities etc...
+4. If activity is done click to delete it from Calendar
+5. If activitiy isn't done until end of the day convert its date to next day (from may 16 to may 17), option to change to not push to next day
+6. Count activites finished, how many activities per day, month, year finished, how many activities pushed to next day etc...
