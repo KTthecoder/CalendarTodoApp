@@ -28,5 +28,8 @@ urlpatterns = [
 
     path('api/', AllRoutes, name='AllRoutes'),
     path('api/activities/sub/<str:date>', ActivityAndSubByDate, name='ActivityAndSubByDate'),
-    path('api/activities/<str:date>', ActivityByDate, name='ActivityByDate')
+    path('api/activities/<str:date>', ActivityByDate, name='ActivityByDate'),
+    path('api/calendar/<int:year>/<int:month>', ShowCalendar, name='ShowCalendar'),
+    path('api/calendar/year-month/<int:year>/<int:month>', ActivityAndSubByYearMonth, name='ActivityAndSubByYearMonth'),
+    path('api/activity/add', AddActivity, name='AddActivity'),
 ]
