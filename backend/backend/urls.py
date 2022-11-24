@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from calendarApp.views import *
+from accountApp.views import *
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -25,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/register', RegisterPage, name='RegisterPage'),
 
     path('api/', AllRoutes, name='AllRoutes'),
     path('api/activities/sub/<str:date>', ActivityAndSubByDate, name='ActivityAndSubByDate'),

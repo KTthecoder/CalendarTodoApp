@@ -1,148 +1,255 @@
+.calendarContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
+    background-color: #222;
+}
+
+.calendarHeader{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 1650px;
+    padding: 20px 0px;
+}
+
+.calendarHeaderText{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.calendarHeaderText p{
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: white;
+}
+
+.calendarHeaderBtn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+    margin-left: 20px;
+}
+
+.calendarHeaderBtn:nth-child(2){
+    margin-left: 5px;
+}
+
+.calendarHeaderBtnIcon{
+    width: 22px;
+    margin: 0px;
+    padding: 0px 20px;
+    cursor: pointer;
+}
+
+.calendarHeaderBtnsDiv{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
 table{
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    width: 100%;
+    width: 1500px;
     min-height: 100vh;
-    background-color: green;
-    opacity: 0;
+    background-color: #222;
+    margin-bottom: 100px;
+    border-bottom: 1px solid rgb(199, 199, 199);
+}
+
+table tr:nth-child(1) th{
+    width: 100%;
+    padding: 30px 0px;
+}
+
+table tr th{
+    cursor: auto;
 }
 
 table tr{
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    width: 100vw;
+    width: 1650px;
 }
 
-.mon{
+table tr td{
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: flex-start;
     width: 100%;
-    min-height: 100px;
-    padding: 20px 0px;
+    height: 320px;
+    padding: 20px 20px;
     box-sizing: border-box;
     flex-direction: column;
-    background-color: blue;
-    color: white;
-    border: 1px solid grey;
-    margin: 5px;
+    border: 1px solid rgb(199, 199, 199);
     cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    color: white;
 }
 
 table tr:nth-child(2) th{
-    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 70px;
+    padding: 20px 0px;
+    box-sizing: border-box;
+    flex-direction: column;
+    color: white;
+    border: 1px solid rgb(199, 199, 199);
     cursor: auto;
-    min-height: 100px;
-    padding: 20px 0px;
-    box-sizing: border-box;
-}
-
-.tue{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 100px;
-    padding: 20px 0px;
-    box-sizing: border-box;
-    flex-direction: column;
-    background-color: blue;
-    color: white;
-    border: 1px solid grey;
-    margin: 5px;
-    cursor: pointer;
-}
-
-.wed{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 100px;
-    padding: 20px 0px;
-    box-sizing: border-box;
-    flex-direction: column;
-    background-color: blue;
-    color: white;
-    border: 1px solid grey;
-    margin: 5px;
-    cursor: pointer;
-}
-
-.thu{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 100px;
-    padding: 20px 0px;
-    box-sizing: border-box;
-    flex-direction: column;
-    background-color: blue;
-    color: white;
-    border: 1px solid grey;
-    margin: 5px;
-    cursor: pointer;
-}
-
-.fri{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 100px;
-    padding: 20px 0px;
-    box-sizing: border-box;
-    flex-direction: column;
-    background-color: blue;
-    color: white;
-    border: 1px solid grey;
-    margin: 5px;
-    cursor: pointer;
-}
-
-.sat{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 100px;
-    padding: 20px 0px;
-    box-sizing: border-box;
-    flex-direction: column;
-    background-color: blue;
-    color: white;
-    border: 1px solid grey;
-    margin: 5px;
-    cursor: pointer;
-}
-
-.sun{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    min-height: 100px;
-    padding: 20px 0px;
-    box-sizing: border-box;
-    flex-direction: column;
-    background-color: blue;
-    color: white;
-    border: 1px solid grey;
-    margin: 5px;
-    cursor: pointer;
+    border-top: 2px solid rgb(199, 199, 199);
 }
 
 .noday{
+    cursor: auto;
+    background-color: rgb(44, 44, 44);
+}
+
+.noday:last-child{
+    border-right: 2px solid rgb(199, 199, 199);
+    box-sizing: border-box;
+    padding: 20px 20px 20px 19px;
+}
+
+.noday:first-child{
+    border-left: 2px solid rgb(199, 199, 199);
+    box-sizing: border-box;
+    padding: 20px 19px 20px 20px;
+}
+
+
+.calendarTask{
+    display: none;
+}
+
+.calendarTaskk{
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    min-height: 100px;
-    padding: 20px 0px;
+    max-height: 75px;
+    font-weight: 500;
+    border-radius: 5px;
+    color: white;
+    font-size: 0.95rem;
+    margin: 10px 0px 0px 0px;
+    opacity: 1;
+    line-height: 25px;
     box-sizing: border-box;
-    margin: 5px;
-    opacity: 0;
+    padding: 0px 15px;
+}
+
+.calendarTask:nth-child(1){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-height: 75px;
+    background-color: rgb(107, 36, 207);
+    font-weight: 400;
+    border-radius: 5px;
+    color: white;
+    font-size: 0.95rem;
+    margin: 20px 0px 0px 0px;
+    opacity: 1;
+    line-height: 25px;
+    box-sizing: border-box;
+    padding: 0px 15px;
+}
+
+.calendarTask:nth-child(1) p{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.calendarTask:nth-child(2){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-height: 75px;
+    background-color: rgb(107, 36, 207);
+    font-weight: 400;
+    border-radius: 5px;
+    color: white;
+    font-size: 0.95rem;
+    margin: 20px 0px 0px 0px;
+    opacity: 1;
+    line-height: 25px;
+    box-sizing: border-box;
+    padding: 0px 15px;
+}
+
+.calendarTask:nth-child(2) p{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.calendarTask:nth-child(3){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-height: 75px;
+    background-color: rgb(23, 97, 245);
+    font-weight: 400;
+    border-radius: 5px;
+    color: white;
+    font-size: 0.95rem;
+    margin: 20px 0px 0px 0px;
+    opacity: 1;
+    line-height: 25px;
+    box-sizing: border-box;
+    padding: 0px 15px;
+}
+
+.calendarTask:nth-child(3) p{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sun{
+    border-right: 2px solid rgb(199, 199, 199);
+}
+
+table tr:nth-child(2) .sun{
+    border-right: 2px solid rgb(199, 199, 199);
+}
+
+.mon{
+    border-left: 2px solid rgb(199, 199, 199);
+}
+
+table tr:nth-child(2) .mon{
+    border-left: 2px solid rgb(199, 199, 199);
+}
+
+.noday:first-child{
+    padding: 20px 20px 20px 20px;
+}
+
+.noday:last-child{
+    padding: 20px 20px 20px 20px;
 }

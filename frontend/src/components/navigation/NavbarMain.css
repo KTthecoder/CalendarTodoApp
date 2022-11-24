@@ -1,0 +1,130 @@
+.NavbarMainContainer{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    background-color: #111;
+    padding-top: 5px;
+}
+
+.NavbarMainContainer1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1650px;
+    flex-direction: column;
+}
+
+.NavbarMainHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.NavbarMainHeaderLeft{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 20%;
+}
+
+.NavbarMainHeaderLeftIcon{
+    width: 25px;
+    cursor: pointer;
+}
+
+.NavbarMainHeaderMin{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+}
+
+.NavbarMainHeaderMin h1{
+    color: white;
+    font-size: 1.3rem;
+}
+
+.NavbarMainHeaderRight{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 20%;
+}
+
+.NavbarMainHeaderRight1{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.NavbarMainHeaderRightIcon{
+    width: 25px;
+    border-radius: 20px;
+    margin: 0px 10px 0px 20px;
+}
+
+.NavbarMainHeaderRight1 p{
+    margin: 0px 20px 0px 0px;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.NavbarMainMid{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.NavbarMainMidLink{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #222;
+    padding: 0px 20px 0px 20px;
+    border-radius: 10px 10px 0px 0px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.NavbarMainMidLink1:nth-child(1){
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0px 20px 0px 0px;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.NavbarMainMidLink1{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0px 20px;
+    border-radius: 10px 10px 0px 0px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.NavbarMainMidLinkIcon{
+    width: 19px;
+    margin-right: 15px;
+}
+
+.NavbarMainMidLink p{
+    font-weight: 500;
+    text-decoration: none;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.NavbarMainMidLink1 p{
+    font-weight: 500;
+    text-decoration: none;
+    color: white;
+    font-size: 0.9rem;
+}
