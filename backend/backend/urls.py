@@ -34,4 +34,8 @@ urlpatterns = [
     path('api/calendar/<int:year>/<int:month>', ShowCalendar, name='ShowCalendar'),
     path('api/calendar/year-month/<int:year>/<int:month>', ActivityAndSubByYearMonth, name='ActivityAndSubByYearMonth'),
     path('api/activity/add', AddActivity, name='AddActivity'),
+    path('api/home-details-stats', HomePageStats, name='HomePageStats'),
+    path('api/complete-task/<int:id>', CompleteTask, name='CompleteTask'),
+    path('api/complete-sub-task/<int:id>', CompleteSubTask, name='CompleteSubTask'),
+    path('api/activities/sub/search/<str:search>/<str:date>', SearchActivity, name='SearchActivity'),
 ]

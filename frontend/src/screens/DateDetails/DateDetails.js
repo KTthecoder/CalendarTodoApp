@@ -1,65 +1,121 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import React, { useContext, useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import NavbarMain from '../../components/navigation/NavbarMain'
 import './DateDetails.css'
 import searchIcon from '../../static/icons/search.png'
 import arrowDownIcon from '../../static/icons/arrowDown.png'
 import checkIcon from '../../static/icons/check.png'
+import { AuthContext } from '../../contexts/AuthProvider'
 
 const DateDetails = () => {
     const { year, month, day } = useParams()
     const [ activities, setActivities ] = useState()
     const [ error, setError ] = useState(false)
     const [ errorData, setErrorData ] = useState()
+    const [ search, setSearch ] = useState('')
+    const [ searchErrorData, setSearchErrorData ] = useState()
     const navigation = useNavigate()
+    const location = useLocation()
 
-    const [ title, setTitle ] = useState()
-    const [ date, setDate ] = useState()
-    const [ note, setNote ] = useState()
-    
+    const [ finishedTasks, setFinishedTasks ] = useState()
+    const [ notFinishedTasks, setNotFinishedTasks ] = useState()
+
+    const { accessToken } = useContext(AuthContext)
 
     useEffect(() => {
         GetActivities()
-    }, [])
+    }, [location])
 
     const GetActivities = () => {
-        fetch(`http://127.0.0.1:8000/api/activities/sub/${year}-${month}-${day}`)
+        fetch(`http://127.0.0.1:8000/api/activities/sub/${year}-${month}-${day}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + accessToken
+            }
+        })
         .then(data => data.json())
         .then((data) => {
             if(data.Response){
-                console.log(data)
                 setError(true)
                 setErrorData(data.Response)
             }
             else{
+                setError(false)
                 setActivities(data)
-                console.log(data)
+                var data1 = []
+                var data2 = []
+
+                for(var i = 0; i < Object.keys(data).length; i++){
+                    if(data[i].finished == true){
+                        data1.push(data[i])
+                        
+                    }
+                    else{
+                        data2.push(data[i])  
+                    }
+                }
+                setFinishedTasks(data1.length)
+                setNotFinishedTasks(data2.length)
             }
         })
         .then((err) => console.log(err))
     }
 
-    const AddActivity = (e) => {
-        e.preventDefault()
-        fetch('http://127.0.0.1:8000/api/activity/add', {
+    const CompleteTask = (id) => {
+        fetch(`http://127.0.0.1:8000/api/complete-task/${id}`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                title: title,
-                date: `${year}-${month}-${day}`,
-                finished: false,
-                note: note,
-            })
+                'Authorization' : 'Bearer ' + accessToken
+            }
         })
         .then(res => res.json())
         .then((data) => {
-            document.location.reload()
+            navigation(`/calendar/tasks/${year}-${month}-${day}`)
         })
         .catch(err => {
             alert(err.message)
         }) 
+    }
+
+    const CompleteSubTask = (id) => {
+        fetch(`http://127.0.0.1:8000/api/complete-sub-task/${id}`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + accessToken
+            }
+        })
+        .then(res => res.json())
+        .then((data) => {
+            navigation(`/calendar/tasks/${year}-${month}-${day}`)
+        })
+        .catch(err => {
+            alert(err.message)
+        }) 
+    }
+
+    //Finish display data searched on page
+    const SearchTask = () => {
+        fetch(`http://127.0.0.1:8000/api/activities/sub/search/${search}/${year}-${month}-${day}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + accessToken
+            }
+        })
+        .then(data => data.json())
+        .then((data) => {
+            if(data.Response){
+                setError(true)
+                setErrorData(data.Response)
+            }
+            else{
+                setActivities(data)
+            }
+        })
+        .then((err) => console.log(err))
     }
 
     return (
@@ -69,13 +125,17 @@ const DateDetails = () => {
                 <div className='DateDetailsHeader'>
                     <div className='DateDetailsHeaderLeft'>
                         <h1>{year}-{month}-{day} Tasks</h1>
-                        <Link to='/' className='DateDetailsHeaderLeftLink'>Add New</Link>
+                        <Link to={`/calendar/create/${year}-${month}-${day}`} state={{background: location}} className='DateDetailsHeaderLeftLink'>Add New</Link>
                     </div>
                     <div className='DateDetailsHeaderRight'>
                         <div className='DateDetailsHeaderRightBar'>
-                            <img src={searchIcon} className='DateDetailsHeaderRightIcon' alt='Search Icon' />
+                            <img src={searchIcon} className='DateDetailsHeaderRightIcon' alt='Search Icon' onClick={() => SearchTask()} />
                             {/* <a href="https://www.flaticon.com/free-icons/search" title="search icons">Search icons created by Pixel perfect - Flaticon</a> */}
-                            <input type='text' className='DateDetailsHeaderRightInp' placeholder='Search Tasks' />
+                            <input type='text' className='DateDetailsHeaderRightInp' onChange={(e) => setSearch(e.target.value)} placeholder='Search Tasks' onKeyDown={event => {
+                                if (event.key === 'Enter') {
+                                    SearchTask()
+                                }
+                            }} />
                         </div>
                     </div>
                 </div>
@@ -84,160 +144,111 @@ const DateDetails = () => {
                         <div className='DateDetailsMainBlockHeader'>
                             <img src={arrowDownIcon} className='DateDetailsMainBlockHeaderIcon' alt='Arrow Down Icon'/>
                             {/* <a href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by Freepik - Flaticon</a> */}
-                            <p>Finish Me! (3)</p>
+                            <p>Finish Me! ({notFinishedTasks && notFinishedTasks ? notFinishedTasks : 0})</p>
                         </div>
-                        <div className='DateDetailsMainBlockContent'>
-                            <div className='DateDetailsMainBlockContentMain'>
-                                <div className='DateDetailsMainBlockContentMainText'>
-                                    <div className='DateDetailsMainBlockContentMainText2'>
-                                        {/* <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' /> */}
-                                        {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
-                                        <p className='DateDetailsMainBlockContentMainIcon'></p>
-                                        <p className='DateDetailsMainBlockContentMainText1'>Task to complete one Task to complete one</p>
-                                    </div>
-                                    <div className='DateDetailsMainBlockContentMainBtns'>
-                                        <p className='DateDetailsMainBlockContentMainRightImportant'>Important</p>
-                                        <img src={arrowDownIcon} className='DateDetailsMainBlockContentMainBtnsIcon' alt='Arrow Down Icon'/>
-                                        {/* <a href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by Freepik - Flaticon</a> */}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='DateDetailsMainBlockContentDetails'>
-                                <div className='DateDetailsMainBlockContentDetails1'>
-                                    <div className='DateDetailsMainBlockContentMainTextSmall'>
-                                        <div className='DateDetailsMainBlockContentMainText2'>
-                                            {/* <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' /> */}
-                                            {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
-                                            <p className='DateDetailsMainBlockContentMainIcon'></p>
-                                            <p className='DateDetailsMainBlockContentMainText1'>Task to complete one Task to complete one</p>
-                                        </div>
-                                        <div className='DateDetailsMainBlockContentMainBtns'>
-                                            <p className='DateDetailsMainBlockContentMainRightImportant'>Important</p>                  
+                        {error ? <h1 className='ErrorH1'>{errorData}</h1>  : 
+                        activities && activities.map((item, counter) => (
+                            <>
+                            {!item.finished ?
+                                <div className='DateDetailsMainBlockContent'>
+                                    
+                                    <div className='DateDetailsMainBlockContentMain' key={item.id}>
+                                        <div className='DateDetailsMainBlockContentMainText'>
+                                            <div className='DateDetailsMainBlockContentMainText2'>                                  
+                                                <p className='DateDetailsMainBlockContentMainIcon' onClick={() => CompleteTask(item.id)}></p>
+                                                <p className='DateDetailsMainBlockContentMainText1'>{item.title}</p>
+                                            </div>
+                                            <div className='DateDetailsMainBlockContentMainBtns'>
+                                                {item.status == 'Important' ? <p className='DateDetailsMainBlockContentMainRightImportant'>{item.status}</p> : ''}
+                                                {item.status == 'Long Term' ? <p className='DateDetailsMainBlockContentMainRightLong'>{item.status}</p> : ''}
+                                                {item.status == 'Short Term' ? <p className='DateDetailsMainBlockContentMainRightShort'>{item.status}</p> : ''}
+                                                <img src={arrowDownIcon} className='DateDetailsMainBlockContentMainBtnsIcon' alt='Arrow Down Icon'/>
+                                                {/* <a href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by Freepik - Flaticon</a> */}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className='DateDetailsMainBlockContentDetails'>
-                                <div className='DateDetailsMainBlockContentDetails1'>
-                                    <div className='DateDetailsMainBlockContentMainTextSmall'>
-                                        <div className='DateDetailsMainBlockContentMainText2'>
-                                            {/* <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' /> */}
-                                            {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
-                                            <p className='DateDetailsMainBlockContentMainIcon'></p>
-                                            <p className='DateDetailsMainBlockContentMainText1'>Task to complete one Task to complete one</p>
+                                    {item.subActivity && item.subActivity.map((value, counter1) => (
+                                        <div className='DateDetailsMainBlockContentDetails1' key={value.id}>
+                                            <div className={value.finished ? 'DateDetailsMainBlockContentDetailsFinished' : 'DateDetailsMainBlockContentDetails'}>
+                                                <div className='DateDetailsMainBlockContentDetails1'>
+                                                    <div className='DateDetailsMainBlockContentMainTextSmall'>
+                                                        <div className='DateDetailsMainBlockContentMainText2'>
+                                                            {value.finished ? <>
+                                                                <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' />
+                                                                {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
+                                                            </>: <p className='DateDetailsMainBlockContentMainIcon' onClick={() => CompleteSubTask(value.id)}></p>}
+                                                            <p className={value.finished ? 'DateDetailsMainBlockContentMainText1Finished' : 'DateDetailsMainBlockContentMainText1'}>{value.title}</p>
+                                                        </div>
+                                                        <div className='DateDetailsMainBlockContentMainBtns'>
+                                                            {value.status == 'Important' ? <p className='DateDetailsMainBlockContentMainRightImportant'>{item.status}</p> : ''}
+                                                            {value.status == 'Long Term' ? <p className='DateDetailsMainBlockContentMainRightLong'>{item.status}</p> : ''}
+                                                            {value.status == 'Short Term' ? <p className='DateDetailsMainBlockContentMainRightShort'>{item.status}</p> : ''}                
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> 
                                         </div>
-                                        <div className='DateDetailsMainBlockContentMainBtns'>
-                                            <p className='DateDetailsMainBlockContentMainRightImportant'>Important</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='DateDetailsMainBlockContentDetails'>
-                                <div className='DateDetailsMainBlockContentDetails1'>
-                                    <div className='DateDetailsMainBlockContentMainTextSmall'>
-                                        <div className='DateDetailsMainBlockContentMainText2'>
-                                            {/* <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' /> */}
-                                            {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
-                                            <p className='DateDetailsMainBlockContentMainIcon'></p>
-                                            <p className='DateDetailsMainBlockContentMainText1'>Task to complete one Task to complete one</p>
-                                        </div>
-                                        <div className='DateDetailsMainBlockContentMainBtns'>
-                                            <p className='DateDetailsMainBlockContentMainRightImportant'>Important</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='DateDetailsMainBlockContent'>
-                            <div className='DateDetailsMainBlockContentMain'>
-                                <div className='DateDetailsMainBlockContentMainText'>
-                                    <div className='DateDetailsMainBlockContentMainText2'>
-                                        {/* <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' /> */}
-                                        {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
-                                        <p className='DateDetailsMainBlockContentMainIcon'></p>
-                                        <p className='DateDetailsMainBlockContentMainText1'>Task to complete one Task to complete one</p>
-                                    </div>
-                                    <div className='DateDetailsMainBlockContentMainBtns'>
-                                        <p className='DateDetailsMainBlockContentMainRightLong'>Long Term</p>
-                                        <img src={arrowDownIcon} className='DateDetailsMainBlockContentMainBtnsIcon' alt='Arrow Down Icon'/>
-                                        {/* <a href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by Freepik - Flaticon</a> */}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='DateDetailsMainBlockContent'>
-                            <div className='DateDetailsMainBlockContentMain'>
-                                <div className='DateDetailsMainBlockContentMainText'>
-                                    <div className='DateDetailsMainBlockContentMainText2'>
-                                        {/* <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' /> */}
-                                        {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
-                                        <p className='DateDetailsMainBlockContentMainIcon'></p>
-                                        <p className='DateDetailsMainBlockContentMainText1'>Task to complete one Task to complete one</p>
-                                    </div>
-                                    <div className='DateDetailsMainBlockContentMainBtns'>
-                                        <p className='DateDetailsMainBlockContentMainRightShort'>Short Term</p>
-                                        <img src={arrowDownIcon} className='DateDetailsMainBlockContentMainBtnsIcon' alt='Arrow Down Icon'/>
-                                        {/* <a href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by Freepik - Flaticon</a> */}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                       
+                                    ))}   
+                                </div>   
+                                : ''} 
+                            </>
+                           
+                        ))}
                     </div>
-
                     <div className='DateDetailsMainBlock'>
                         <div className='DateDetailsMainBlockHeader'>
                             <img src={arrowDownIcon} className='DateDetailsMainBlockHeaderIcon' alt='Arrow Down Icon'/>
                             {/* <a href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by Freepik - Flaticon</a> */}
-                            <p>Completed (5)</p>
+                            <p>Completed ({finishedTasks && finishedTasks ? finishedTasks : 0})</p>
                         </div>
-                        <div className='DateDetailsMainBlockContent'>
-                            <div className='DateDetailsMainBlockContentMain'>
-                                <div className='DateDetailsMainBlockContentMainText'>
-                                    <div className='DateDetailsMainBlockContentMainText2'>
-                                        <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' />
-                                        {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
-                                        {/* <p className='DateDetailsMainBlockContentMainIcon'></p> */}
-                                        <p className='DateDetailsMainBlockContentMainText1'>Task to complete one Task to complete one</p>
+                        {error ? <h1 className='ErrorH1'>Complete tasks to see them in this pannel</h1>  : 
+                        activities && activities.map((item, counter) => (    
+                            <>
+                                {item.finished ?
+                                <div className='DateDetailsMainBlockContent' >
+                                    <div className='DateDetailsMainBlockContentMain' key={item.id}>
+                                        <div className='DateDetailsMainBlockContentMainText'>
+                                            <div className='DateDetailsMainBlockContentMainText2'>
+                                                <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' />
+                                                {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
+                                                <p className='DateDetailsMainBlockContentMainText1'>{item.title}</p>
+                                            </div>
+                                            <div className='DateDetailsMainBlockContentMainBtns'>
+                                                {item.status == 'Important' ? <p className='DateDetailsMainBlockContentMainRightImportant'>{item.status}</p> : ''}
+                                                {item.status == 'Long Term' ? <p className='DateDetailsMainBlockContentMainRightLong'>{item.status}</p> : ''}
+                                                {item.status == 'Short Term' ? <p className='DateDetailsMainBlockContentMainRightShort'>{item.status}</p> : ''}
+                                                <img src={arrowDownIcon} className='DateDetailsMainBlockContentMainBtnsIcon' alt='Arrow Down Icon'/>
+                                                {/* <a href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by Freepik - Flaticon</a> */}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className='DateDetailsMainBlockContentMainBtns'>
-                                        <p className='DateDetailsMainBlockContentMainRightShort'>Short Term</p>
-                                        <img src={arrowDownIcon} className='DateDetailsMainBlockContentMainBtnsIcon' alt='Arrow Down Icon'/>
-                                        {/* <a href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by Freepik - Flaticon</a> */}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                    
+                                    {item.subActivity && item.subActivity.map((value, counter1) => (
+                                        <div className='DateDetailsMainBlockContentDetails1' key={value.id}>
+                                            <div className='DateDetailsMainBlockContentDetails'>
+                                                <div className='DateDetailsMainBlockContentDetails1'>
+                                                    <div className='DateDetailsMainBlockContentMainTextSmall'>
+                                                        <div className='DateDetailsMainBlockContentMainText2'>
+                                                            <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' />
+                                                            {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}                     
+                                                            <p className='DateDetailsMainBlockContentMainText1'>{value.title}</p>
+                                                        </div>
+                                                        <div className='DateDetailsMainBlockContentMainBtns'>
+                                                            {value.status == 'Important' ? <p className='DateDetailsMainBlockContentMainRightImportant'>{item.status}</p> : ''}
+                                                            {value.status == 'Long Term' ? <p className='DateDetailsMainBlockContentMainRightLong'>{item.status}</p> : ''}
+                                                            {value.status == 'Short Term' ? <p className='DateDetailsMainBlockContentMainRightShort'>{item.status}</p> : ''}               
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                        </div>
+                                    ))}
+                                </div>   :''}        
+                            </>
+                        ))}
                     </div>
                 </div>
             </div>
-            {/* 
-            <div>
-                {error ? <h1>{errorData}</h1> : 
-                    activities && activities.map((item) => (
-                        <div key={item.id}>
-                            <p>Activity: {item.title}</p>
-                            <p>Activity date: {item.date}</p>
-                            <br/>
-                            {item.subActivity && item.subActivity.map((value) => (
-                                <div key={item.id} style={{marginLeft: '30px'}}>
-                                    <p>SubActivity: {value.title}</p>
-                                    <p>SubActivityNote: {value.note}</p>
-                                </div>
-                            ))}
-                        </div>
-                    ))
-                }
-                
-            </div> */}
-            {/* <h1>Create Activity</h1>
-            <form method='POST' onSubmit={AddActivity} enctype="multipart/form-data" >
-                <label>Title</label>
-                <input type='text' placeholder='Title' onChange={(e) => setTitle(e.target.value)} />
-                <label>Note</label>
-                <input type='text' placeholder='Note' onChange={(e) => setNote(e.target.value)} />
-                <button type='submit'>Create Activity</button>
-            </form> */}
         </div>
     )
 }

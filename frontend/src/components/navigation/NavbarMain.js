@@ -6,7 +6,7 @@ import calendarIcon from '../../static/icons/calendar.png'
 import statsIcon from '../../static/icons/stats.png'
 import todayIcon from '../../static/icons/today.png'
 import reactLogoIcon from '../../static/imgs/reactLogo.png'
-import { NavLink, useLocation, useParams } from 'react-router-dom'
+import { NavLink, useLocation, useParams, Outlet, useNavigate } from 'react-router-dom'
 
 const NavbarMain1 = () => {
 
@@ -15,6 +15,7 @@ const NavbarMain1 = () => {
     const [ yearState, setYearState ] = useState(0)
     const [ monthState, setMonthState ] = useState(0)
     const [ dayState, setDayState ] = useState(0)
+    const navigation = useNavigate()
 
     useEffect(() => {
         if(day == undefined){
@@ -27,7 +28,7 @@ const NavbarMain1 = () => {
 
         if(year == undefined || month == undefined){
             var date = new Date()
-            setMonthState(date.getUTCMonth() + 2)
+            setMonthState(date.getUTCMonth() + 1)
             setYearState(date.getUTCFullYear())
         }
         else{
@@ -50,7 +51,7 @@ const NavbarMain1 = () => {
                     <div className='NavbarMainHeaderRight'>
                         <div className='NavbarMainHeaderRight1'>
                             <img src={reactLogoIcon} className='NavbarMainHeaderRightIcon' alt='Profile Image'/>
-                            <p>Username2115</p>
+                            <p onClick={() => navigation('/profile')}>Username2115</p>
                         </div>
                     </div>
                 </div>
@@ -73,7 +74,7 @@ const NavbarMain1 = () => {
                     </NavLink>
                 </div>
             </div>
-            
+            <Outlet />
         </div>
     )
 }

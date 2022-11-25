@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import NavbarMain from '../../components/navigation/NavbarMain'
 import './CalendarScreen.css'
 import arrowRightIcon from '../../static/icons/rightArrow.png'
 import arrowLeftIcon from '../../static/icons/leftArrow.png'
+import { AuthContext } from '../../contexts/AuthProvider'
 
 const CalendarScreen = () => {
     const [calendar, setCalendar] = useState()
@@ -12,6 +13,8 @@ const CalendarScreen = () => {
     const navigation = useNavigate()
     const [ dateText, setDateText ] = useState()
     const location = useLocation()
+
+    const { accessToken } = useContext(AuthContext)
 
     useEffect(() => {
         getCalendar()
@@ -47,7 +50,13 @@ const CalendarScreen = () => {
     }
 
     const getTasks = () => {
-        fetch(`http://127.0.0.1:8000/api/calendar/year-month/${year}/${month}`)
+        fetch(`http://127.0.0.1:8000/api/calendar/year-month/${year}/${month}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + accessToken
+            }
+        })
         .then(data => data.json())
         .then(data => {    
             var days = document.querySelectorAll('td')
@@ -55,7 +64,6 @@ const CalendarScreen = () => {
             data.forEach((item) => {
                 var dayNr = item.date.split('-')
                 var title = item.title
-                console.log(dayNr)
 
                 days.forEach((item1) => {    
                     if(item1.innerHTML.includes(dayNr[2]) && month == dayNr[1]){
@@ -138,11 +146,16 @@ const CalendarScreen = () => {
     }
 
     const getCalendar = () => {
-        fetch(`http://127.0.0.1:8000/api/calendar/${year}/${month}`)
+        fetch(`http://127.0.0.1:8000/api/calendar/${year}/${month}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + accessToken
+            }
+        })
         .then(data => data.json())
         .then(data => {
             if(data.Response){
-                console.log('This year or month does not exists')
                 setCalendarError(true)
             }
             else{
