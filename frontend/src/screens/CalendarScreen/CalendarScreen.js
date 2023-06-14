@@ -25,7 +25,7 @@ const CalendarScreen = () => {
         var year1 = year
 
         if(direction === 'left'){
-            if(month1 == 1){
+            if(month1 === 1){
                 month1 = 12
                 year1 = year1 - 1
                 navigation(`/calendar/${year1}/${month1}`)
@@ -37,7 +37,7 @@ const CalendarScreen = () => {
         }
 
         if(direction === 'right'){
-            if(month1 == 12){
+            if(month1 === 12){
                 month1 = 1
                 year1 = parseInt(year1) + 1
                 navigation(`/calendar/${year1}/${month1}`)
@@ -64,22 +64,26 @@ const CalendarScreen = () => {
             data.forEach((item) => {
                 var dayNr = item.date.split('-')
                 var title = item.title
+                var tagP = ''
+                var tagDiv = ''
+                var text = ''     
 
                 days.forEach((item1) => {    
-                    if(item1.innerHTML.includes(dayNr[2]) && month == dayNr[1]){
+                    if(item1.innerHTML.includes(dayNr[2])){
                         if(item1.getElementsByTagName('p').length < 2){
-                            var tagP = document.createElement('p')
-                            var tagDiv = document.createElement('div')
-                            var text = document.createTextNode(title)
+                            tagP = document.createElement('p')
+                            tagDiv = document.createElement('div')
+                            text = document.createTextNode(title)
                             tagDiv.classList.add("calendarTask")
                             tagP.appendChild(text)
                             tagDiv.appendChild(tagP)
                             item1.appendChild(tagDiv)     
+                            
                         }
-                        else {
-                            var tagP = document.createElement('p')
-                            var tagDiv = document.createElement('div')
-                            var text = document.createTextNode("and more...")
+                        else if(item1.getElementsByTagName('p').length === 2) {
+                            tagP = document.createElement('p')
+                            tagDiv = document.createElement('div')
+                            text = document.createTextNode("and more...")
                             tagDiv.classList.add("calendarTaskk")
                             tagP.appendChild(text)
                             tagDiv.appendChild(tagP)
@@ -159,6 +163,7 @@ const CalendarScreen = () => {
                 setCalendarError(true)
             }
             else{
+                console.log(data)
                 setCalendar(data) 
                 setTimeout(() => {
                     AddZero()

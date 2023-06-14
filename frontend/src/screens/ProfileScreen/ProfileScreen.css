@@ -1,0 +1,27 @@
+.ProfileContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
+}
+
+.ProfileContainer1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1650px;
+}
+
+.ProfileLogoutBtn{
+    width: 170px;
+    font-size: 1rem;
+    color: white;
+    padding: 13px 0px;
+    font-weight: 500;
+    background-color: rgb(107, 36, 207);
+    border: none;
+    border-radius: 10px;
+    margin-top: 100px;
+    cursor: pointer;
+}

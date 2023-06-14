@@ -47,6 +47,7 @@
     align-items: flex-start;
     width: 80%;
     margin-bottom: 10px;
+    color: white;
 }
 
 .LoginInpDiv{
@@ -60,16 +61,19 @@
 
 .LoginInpDiv p{
     margin: 0px 0px 10px 0px;
+    color: white;
 }
 
 .LoginInp{
     width: 100%;
     box-sizing: border-box;
-    padding: 15px 20px;
+    padding: 18px 20px;
     font-size: 1rem;
     border-radius: 5px;
-    border: 1px solid rgb(137, 137, 137);
+    border: 1px solid rgb(30, 30, 30);
     outline: none;
+    background-color: #111;
+    color: white;
 }
 
 .LoginBtnDiv{
@@ -80,7 +84,7 @@
 }
 
 .LoginBtnDiv button{
-    background-color: rgb(51, 122, 181);
+    background-color: #6B24CF;
     border: none;
     color: white;
     width: 100%;
@@ -101,9 +105,11 @@
 
 .LoginDivInfo p{
     margin: 0px 5px 0px 0px;
+    color: white;
 }
 
 .LoginDivInfoLink{
     text-decoration: none;
-    color: rgb(51, 122, 181);
+    color: #6B24CF;
+    font-weight: 500;
 }

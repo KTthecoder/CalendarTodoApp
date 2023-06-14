@@ -1,7 +1,7 @@
 from .models import *
 from .serializers import *
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view
 from rest_framework import status
 
 # Create your views here.

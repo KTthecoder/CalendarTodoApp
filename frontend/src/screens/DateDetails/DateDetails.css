@@ -207,14 +207,27 @@
     width: 95%;
 }
 
+.DateDetailsMainBlockContentMainTextFinished1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: #111;
+    padding: 10px 0px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    line-height: 30px;
+    letter-spacing: 1px;
+    color: rgb(168, 168, 168);
+    opacity: 0.6;
+}
+
 .DateDetailsMainBlockContentMainText1{
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
 }
-
-
 
 .DateDetailsMainBlockContentMainText2{
     display: flex;
@@ -253,6 +266,22 @@
     line-height: 30px;
     letter-spacing: 1px;
     width: 90%;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+.DateDetailsMainBlockContentMainText1F{
+    font-size: 1.1rem;
+    line-height: 30px;
+    letter-spacing: 1px;
+    width: 90%;
+    text-decoration: none;
+    color: white;
+}
+
+.DateDetailsMainBlockContentMainText1:hover{
+    text-decoration: underline;
 }
 
 .DateDetailsMainBlockContentMainText1Finished{
@@ -271,9 +300,15 @@
     width: 30%;
 }
 
+.DateDetailsMainBlockContentMainBtnsLinkIcon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .DateDetailsMainBlockContentMainBtnsIcon{
     width: 25px;
-    margin-left: 150px;
+    margin-left: 30px;
     cursor: pointer;
 }
 

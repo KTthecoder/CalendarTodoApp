@@ -4,11 +4,14 @@ import { AuthContext } from '../../contexts/AuthProvider'
 import './ProfileScreen.css'
 
 const ProfileScreen = () => {
-    const { loginUser } = useContext(AuthContext)
+    const { logoutUser } = useContext(AuthContext)
 
     return (
         <div className='ProfileContainer'>
             <NavbarMain/>
+            <div className='ProfileContainer1'>
+                <button className='ProfileLogoutBtn' onClick={() => logoutUser()}>Logout</button>
+            </div>
         </div>
     )
 }

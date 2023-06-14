@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './NavbarMain.css'
 import menuIcon from '../../static/icons/menu.png'
 import homeIcon from '../../static/icons/home.png'
 import calendarIcon from '../../static/icons/calendar.png'
-import statsIcon from '../../static/icons/stats.png'
 import todayIcon from '../../static/icons/today.png'
-import reactLogoIcon from '../../static/imgs/reactLogo.png'
+import userIcon from '../../static/icons/user.png'
 import { NavLink, useLocation, useParams, Outlet, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../../contexts/AuthProvider'
 
 const NavbarMain1 = () => {
 
@@ -16,6 +16,8 @@ const NavbarMain1 = () => {
     const [ monthState, setMonthState ] = useState(0)
     const [ dayState, setDayState ] = useState(0)
     const navigation = useNavigate()
+
+    const { user } = useContext(AuthContext)
 
     useEffect(() => {
         if(day == undefined){
@@ -35,6 +37,7 @@ const NavbarMain1 = () => {
             setMonthState(month)
             setYearState(year)
         }
+        console.log(user)
     }, [location])
 
     return (
@@ -50,8 +53,9 @@ const NavbarMain1 = () => {
                     </div>
                     <div className='NavbarMainHeaderRight'>
                         <div className='NavbarMainHeaderRight1'>
-                            <img src={reactLogoIcon} className='NavbarMainHeaderRightIcon' alt='Profile Image'/>
-                            <p onClick={() => navigation('/profile')}>Username2115</p>
+                            <img src={userIcon} className='NavbarMainHeaderRightIcon' alt='Profile Image'/>
+                            {/* <a href="https://www.flaticon.com/free-icons/user" title="user icons">User icons created by Freepik - Flaticon</a> */}
+                            <p onClick={() => navigation('/profile')}>{user.username}</p>
                         </div>
                     </div>
                 </div>
@@ -67,10 +71,6 @@ const NavbarMain1 = () => {
                     <NavLink to={`/calendar/${yearState}/${monthState}`} className={({isActive}) => (isActive ? 'NavbarMainMidLink' : 'NavbarMainMidLink1')}>
                         <img src={calendarIcon} className='NavbarMainMidLinkIcon' alt='Home Icon' />
                         <p>Calendar</p>
-                    </NavLink>
-                    <NavLink to='/stats' className={({isActive}) => (isActive ? 'NavbarMainMidLink' : 'NavbarMainMidLink1')}>
-                        <img src={statsIcon} className='NavbarMainMidLinkIcon' alt='Home Icon' />
-                        <p>Stats</p>
                     </NavLink>
                 </div>
             </div>

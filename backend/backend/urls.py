@@ -18,13 +18,14 @@ from django.urls import path
 from calendarApp.views import *
 from accountApp.views import *
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
     TokenRefreshView,
 )
 
+from . import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/', views.MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/register', RegisterPage, name='RegisterPage'),
 
@@ -34,8 +35,13 @@ urlpatterns = [
     path('api/calendar/<int:year>/<int:month>', ShowCalendar, name='ShowCalendar'),
     path('api/calendar/year-month/<int:year>/<int:month>', ActivityAndSubByYearMonth, name='ActivityAndSubByYearMonth'),
     path('api/activity/add', AddActivity, name='AddActivity'),
+    path('api/sub-activity/add', AddSubActivity, name='AddSubActivity'),
     path('api/home-details-stats', HomePageStats, name='HomePageStats'),
     path('api/complete-task/<int:id>', CompleteTask, name='CompleteTask'),
     path('api/complete-sub-task/<int:id>', CompleteSubTask, name='CompleteSubTask'),
     path('api/activities/sub/search/<str:search>/<str:date>', SearchActivity, name='SearchActivity'),
+    path('api/activity/delete/<int:id>', DeleteActivate, name='DeleteActivate'),
+    path('api/sub-activity/delete/<int:id>', DeleteSubActivity, name='DeleteSubActivity'),
+    path('api/activity/edit/<int:id>', EditActivate, name='EditActivate'),
+    path('api/sub-activity/edit/<int:id>', EditSubActivity, name='EditSubActivity'),
 ]

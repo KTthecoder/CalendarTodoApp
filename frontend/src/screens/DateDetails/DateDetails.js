@@ -6,6 +6,8 @@ import searchIcon from '../../static/icons/search.png'
 import arrowDownIcon from '../../static/icons/arrowDown.png'
 import checkIcon from '../../static/icons/check.png'
 import { AuthContext } from '../../contexts/AuthProvider'
+import deleteIcon from '../../static/icons/delete.png'
+import plusIcon from '../../static/icons/plus.png'
 
 const DateDetails = () => {
     const { year, month, day } = useParams()
@@ -96,7 +98,6 @@ const DateDetails = () => {
         }) 
     }
 
-    //Finish display data searched on page
     const SearchTask = () => {
         fetch(`http://127.0.0.1:8000/api/activities/sub/search/${search}/${year}-${month}-${day}`, {
             method: 'GET',
@@ -116,6 +117,40 @@ const DateDetails = () => {
             }
         })
         .then((err) => console.log(err))
+    }
+
+    const DeleteTask = (id) => {
+        fetch(`http://127.0.0.1:8000/api/activity/delete/${id}`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + accessToken
+            }
+        })
+        .then(res => res.json())
+        .then((data) => {
+            navigation(`/calendar/tasks/${year}-${month}-${day}`)
+        })
+        .catch(err => {
+            alert(err.message)
+        }) 
+    }
+
+    const DeleteSubTask = (id) => {
+        fetch(`http://127.0.0.1:8000/api/sub-activity/delete/${id}`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization' : 'Bearer ' + accessToken
+            }
+        })
+        .then(res => res.json())
+        .then((data) => {
+            navigation(`/calendar/tasks/${year}-${month}-${day}`)
+        })
+        .catch(err => {
+            alert(err.message)
+        }) 
     }
 
     return (
@@ -147,27 +182,32 @@ const DateDetails = () => {
                             <p>Finish Me! ({notFinishedTasks && notFinishedTasks ? notFinishedTasks : 0})</p>
                         </div>
                         {error ? <h1 className='ErrorH1'>{errorData}</h1>  : 
-                        activities && activities.map((item, counter) => (
+                        activities && activities.map((item) => (
                             <>
                             {!item.finished ?
-                                <div className='DateDetailsMainBlockContent'>
-                                    
+                                <div className='DateDetailsMainBlockContent'>      
                                     <div className='DateDetailsMainBlockContentMain' key={item.id}>
                                         <div className='DateDetailsMainBlockContentMainText'>
                                             <div className='DateDetailsMainBlockContentMainText2'>                                  
                                                 <p className='DateDetailsMainBlockContentMainIcon' onClick={() => CompleteTask(item.id)}></p>
-                                                <p className='DateDetailsMainBlockContentMainText1'>{item.title}</p>
+                                                <Link className='DateDetailsMainBlockContentMainText1' state={{background: location}} to={`/calendar/edit/${year}-${month}-${day}/${item.id}`}>{item.title}</Link>
                                             </div>
                                             <div className='DateDetailsMainBlockContentMainBtns'>
                                                 {item.status == 'Important' ? <p className='DateDetailsMainBlockContentMainRightImportant'>{item.status}</p> : ''}
                                                 {item.status == 'Long Term' ? <p className='DateDetailsMainBlockContentMainRightLong'>{item.status}</p> : ''}
-                                                {item.status == 'Short Term' ? <p className='DateDetailsMainBlockContentMainRightShort'>{item.status}</p> : ''}
+                                                {item.status == 'Short Term' ? <p className='DateDetailsMainBlockContentMainRightShort'>{item.status}</p> : ''}    
+                                                <Link className='DateDetailsMainBlockContentMainBtnsLinkIcon' to={`/calendar/sub-create/${year}-${month}-${day}/${item.id}`} state={{background: location}}>
+                                                    <img src={plusIcon} className='DateDetailsMainBlockContentMainBtnsIcon' alt='Delete Icon'/>   
+                                                    {/* <a href="https://www.flaticon.com/free-icons/plus" title="plus icons">Plus icons created by Freepik - Flaticon</a> */}
+                                                </Link>                                                     
+                                                <img src={deleteIcon} className='DateDetailsMainBlockContentMainBtnsIcon' onClick={() => DeleteTask(item.id)} alt='Delete Icon'/>
+                                                {/* <a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Freepik - Flaticon</a> */}
                                                 <img src={arrowDownIcon} className='DateDetailsMainBlockContentMainBtnsIcon' alt='Arrow Down Icon'/>
                                                 {/* <a href="https://www.flaticon.com/free-icons/arrow" title="arrow icons">Arrow icons created by Freepik - Flaticon</a> */}
                                             </div>
                                         </div>
                                     </div>
-                                    {item.subActivity && item.subActivity.map((value, counter1) => (
+                                    {item.subActivity && item.subActivity.map((value) => (
                                         <div className='DateDetailsMainBlockContentDetails1' key={value.id}>
                                             <div className={value.finished ? 'DateDetailsMainBlockContentDetailsFinished' : 'DateDetailsMainBlockContentDetails'}>
                                                 <div className='DateDetailsMainBlockContentDetails1'>
@@ -177,12 +217,14 @@ const DateDetails = () => {
                                                                 <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' />
                                                                 {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
                                                             </>: <p className='DateDetailsMainBlockContentMainIcon' onClick={() => CompleteSubTask(value.id)}></p>}
-                                                            <p className={value.finished ? 'DateDetailsMainBlockContentMainText1Finished' : 'DateDetailsMainBlockContentMainText1'}>{value.title}</p>
+                                                            <Link state={{background: location}} to={`/calendar/edit-sub/${year}-${month}-${day}/${value.id}/${item.id}`} className={value.finished ? 'DateDetailsMainBlockContentMainText1Finished' : 'DateDetailsMainBlockContentMainText1'}>{value.title}</Link>
                                                         </div>
                                                         <div className='DateDetailsMainBlockContentMainBtns'>
-                                                            {value.status == 'Important' ? <p className='DateDetailsMainBlockContentMainRightImportant'>{item.status}</p> : ''}
-                                                            {value.status == 'Long Term' ? <p className='DateDetailsMainBlockContentMainRightLong'>{item.status}</p> : ''}
-                                                            {value.status == 'Short Term' ? <p className='DateDetailsMainBlockContentMainRightShort'>{item.status}</p> : ''}                
+                                                            {value.status == 'Important' ? <p className='DateDetailsMainBlockContentMainRightImportant'>{value.status}</p> : ''}
+                                                            {value.status == 'Long Term' ? <p className='DateDetailsMainBlockContentMainRightLong'>{value.status}</p> : ''}
+                                                            {value.status == 'Short Term' ? <p className='DateDetailsMainBlockContentMainRightShort'>{value.status}</p> : ''}                
+                                                            <img src={deleteIcon} className='DateDetailsMainBlockContentMainBtnsIcon' onClick={() => DeleteSubTask(value.id)} alt='Delete Icon'/>
+                                                            {/* <a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Freepik - Flaticon</a> */}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -202,16 +244,16 @@ const DateDetails = () => {
                             <p>Completed ({finishedTasks && finishedTasks ? finishedTasks : 0})</p>
                         </div>
                         {error ? <h1 className='ErrorH1'>Complete tasks to see them in this pannel</h1>  : 
-                        activities && activities.map((item, counter) => (    
+                        activities && activities.map((item) => (    
                             <>
                                 {item.finished ?
                                 <div className='DateDetailsMainBlockContent' >
-                                    <div className='DateDetailsMainBlockContentMain' key={item.id}>
+                                    <div className={item.finished ? 'DateDetailsMainBlockContentMainTextFinished1' : 'DateDetailsMainBlockContentMain'} key={item.id}>
                                         <div className='DateDetailsMainBlockContentMainText'>
                                             <div className='DateDetailsMainBlockContentMainText2'>
                                                 <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' />
                                                 {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}
-                                                <p className='DateDetailsMainBlockContentMainText1'>{item.title}</p>
+                                                <p className={item.finished ? 'DateDetailsMainBlockContentMainText1Finished' : 'DateDetailsMainBlockContentMainText1'}>{item.title}</p>
                                             </div>
                                             <div className='DateDetailsMainBlockContentMainBtns'>
                                                 {item.status == 'Important' ? <p className='DateDetailsMainBlockContentMainRightImportant'>{item.status}</p> : ''}
@@ -223,20 +265,20 @@ const DateDetails = () => {
                                         </div>
                                     </div>
                                     
-                                    {item.subActivity && item.subActivity.map((value, counter1) => (
+                                    {item.subActivity && item.subActivity.map((value) => (
                                         <div className='DateDetailsMainBlockContentDetails1' key={value.id}>
-                                            <div className='DateDetailsMainBlockContentDetails'>
+                                            <div className={value.finished ? 'DateDetailsMainBlockContentDetailsFinished' : 'DateDetailsMainBlockContentDetails'}>
                                                 <div className='DateDetailsMainBlockContentDetails1'>
                                                     <div className='DateDetailsMainBlockContentMainTextSmall'>
                                                         <div className='DateDetailsMainBlockContentMainText2'>
                                                             <img src={checkIcon} className='DateDetailsMainBlockContentMainIcon1' alt='Check Icon' />
                                                             {/* <a href="https://www.flaticon.com/free-icons/foursquare-check-in" title="foursquare check in icons">Foursquare check in icons created by hqrloveq - Flaticon</a>  */}                     
-                                                            <p className='DateDetailsMainBlockContentMainText1'>{value.title}</p>
+                                                            <p className={value.finished ? 'DateDetailsMainBlockContentMainText1Finished' : 'DateDetailsMainBlockContentMainText1'}>{value.title}</p>
                                                         </div>
                                                         <div className='DateDetailsMainBlockContentMainBtns'>
-                                                            {value.status == 'Important' ? <p className='DateDetailsMainBlockContentMainRightImportant'>{item.status}</p> : ''}
-                                                            {value.status == 'Long Term' ? <p className='DateDetailsMainBlockContentMainRightLong'>{item.status}</p> : ''}
-                                                            {value.status == 'Short Term' ? <p className='DateDetailsMainBlockContentMainRightShort'>{item.status}</p> : ''}               
+                                                            {value.status == 'Important' ? <p className='DateDetailsMainBlockContentMainRightImportant'>{value.status}</p> : ''}
+                                                            {value.status == 'Long Term' ? <p className='DateDetailsMainBlockContentMainRightLong'>{value.status}</p> : ''}
+                                                            {value.status == 'Short Term' ? <p className='DateDetailsMainBlockContentMainRightShort'>{value.status}</p> : ''}               
                                                         </div>
                                                     </div>
                                                 </div>

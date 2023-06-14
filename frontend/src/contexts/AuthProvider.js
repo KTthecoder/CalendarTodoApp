@@ -9,7 +9,7 @@ const AuthProvider = (props) => {
     let [accessToken, setAccessToken] = useState(() => localStorage.getItem('accessToken') ? JSON.parse(localStorage.getItem('accessToken')) : null)
     let [user, setUser] = useState(() => localStorage.getItem('accessToken') ? jwt_decode(localStorage.getItem('accessToken')) : null )
     let navigate = useNavigate()
-    let [loading, setLoading] = useState(false)
+    let [loading, setLoading] = useState(true)
 
     const loginUser = async (e) => {
         e.preventDefault()
@@ -81,17 +81,16 @@ const AuthProvider = (props) => {
     }
 
     useEffect(() => {
-
         if(loading){
             updateToken()
         }
 
-        let fourMinutes = 1000 * 60 * 4 
+        let time = 1000 * 60
         let interval = setInterval(() => {
             if(accessToken){
                 updateToken()
             }
-        }, fourMinutes)
+        }, time)
         return () => clearInterval(interval)
 
     }, [accessToken, refreshToken, loading])
